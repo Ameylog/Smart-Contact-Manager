@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::Layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title >Login Page</title>
+</head>
+<body>
+<section>
+    <div id="login">
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+
+                        <!--   Register form-->
+                        <form id="login-form" class="form" th:action="@{/signin}"  method="post">
+
+                            <h3 class="text-center text-black">Login</h3>
+
+                            <!-- Error Message -->
+                           <div th:if="${param.error}" class="alert alert-danger">
+                               Invalid username and password
+                           </div>
+
+
+                            <!-- logout message -->
+                            <div th:if="${param.logout}" class="alert alert-success">
+                               Yo have been logged out
+                            </div>
+
+                            <!-- username -->
+                            <div class="form-group">
+                                <label for="username" class="text-black">Username</label><br>
+                                <input type="text" name="username" id="username" class="form-control">
+                            </div>
+
+                            <!-- password -->
+                            <div class="form-group pt-3">
+                                <label for="password" class="text-black">Password</label><br>
+                                <input type="password" name="password" id="password" class="form-control">
+                            </div>
+
+                            <!-- remember me -->
+                            <div class="form-group mt-2" >
+                                <label for="remember-me" class="text-black">
+                                    <span>Remember me</span>
+                                     
+                                    <span>
+                                        <input id="remember-me" name="remember-me" type="checkbox">
+                                    </span>
+                                </label>
+                                <br>
+
+                                <!-- submit button -->
+                                <input type="submit" name="submit" class="btn btn-primary bg-primary btn-md mt-2" value="submit">
+                            </div>
+                            <br>
+
+                            <!-- register here link -->
+                            <div class="text-end" id="register-link" >
+                                <a href="/signup" class="text-black ">Register here</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

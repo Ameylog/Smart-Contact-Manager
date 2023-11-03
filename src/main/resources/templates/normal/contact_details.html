@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{normal/base::Layout(~{::section})}">
+<head>
+	<meta charset="UTF-8">
+	<title>This Contact details Page</title>
+</head>
+<body>
+<section>
+	
+	<!-- if condition if show only users contact and access it -->
+	<div class="card mx-2" th:if="${contact}">
+		<div class="card-body">
+		
+			<div class="container text-center">
+				
+				<img src=" " style="height: 200px; width: 200px" class="my_profile_picture"
+				     th:src="@{'/img/'+${contact.image}}" alt="profile photo">
+				
+				<h1><span th:text="${contact.name}"></span> (<span th:text="${contact.secondName}"></span>) </h1>
+				
+				<table class="table">
+					<thead>
+					<tr>
+						<th scope="col">#ID</th>
+						<th scope="col">SCRMUSER<span th:text="${contact.cId}"></span> </th>
+					
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<th scope="row">Email</th>
+						<td><span th:text="${contact.email}"></span></td>
+					</tr>
+					
+					<tr>
+						<th scope="row">Phone</th>
+						<td><span th:text="${contact.phone}"></span></td>
+					</tr>
+					
+					<tr>
+						<th scope="row">Work</th>
+						<td><span th:text="${contact.work}"></span></td>
+					</tr>
+					
+					</tbody>
+					
+				</table>
+				
+				<div class="description">
+					<th:block th:text="${contact.description}"></th:block>
+				</div>
+			</div>
+			
+			<div class="d-flex justify-content-center mt-4">
+				<button th:onclick="|deleteContact(${contact.cId})|" class="btn btn-danger px-4 mx-3">Delete</button>
+				
+				<form method="post" th:action="@{'/user/update-contact/'+${contact.cId}}"  >
+					<button type="submit" class="btn btn-success px-4 mx-3">Update</button>
+				</form>
+			
+			</div>
+			
+			
+			
+		</div>
+	
+	</div>
+	
+	<!-- else condition of if contact of other user -->
+	<h1 th:unless="${contact}" style="color: red" class="mx-3">You don't have permission to see this contact..... </h1>
+</section>
+</body>
+</html>

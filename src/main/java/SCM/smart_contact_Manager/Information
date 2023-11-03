@@ -1,0 +1,24 @@
+# Add cdn in html
+https://cdnjs.com/libraries/font-awesome
+
+# Icon for Logout,profile....
+https://fontawesome.com/search?q=logout&o=r
+
+# Alert box when click on Delete button  it is present on view contact on side bar
+https://sweetalert2.github.io/
+
+
+
+## HtMl files
+
+user_dashboard :- Showing User Dashboard
+add_contact_form :- it is for add user contact details it is show on click of [Add Contact] of side bar
+show_contact :- It is Showing details when Click on [View Contact] of sidebar
+contact_details :- Showing the Contact Detail on Click on email
+
+normal/base :- it is customize for user all form inheritance from this form
+
+
+login :- for Login
+singup :- For singup
+home :- home for public user
