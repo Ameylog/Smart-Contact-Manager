@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-                th:replace="~{base::Layout(~{::section})}">
+      th:replace="~{base::Layout(~{::section})}">
 <head>
-    <meta charset="UTF-8">
-    <title>About Page</title>
+	<meta charset="UTF-8">
+	<title>About Page</title>
 </head>
 <body>
-    <section>
-
-        <h1>This is about Page</h1>
-        <h2>Here we are going to write about Smart  Contact Manager</h2>
-    </section>
+<section class="banner1 d-flex justify-content-center align-items-center">
+	<div class="text-center">
+		<h1 class="font-weight-bold" style="color:#009688!important;">Smart Contact Manager</h1>
+		
+		<h3>About</h3>
+		<p>A contact manager is a software program that enables users to easily store and find contact information, such
+			as names, addresses, and telephone numbers. They are contact-centric databases that provide a fully
+			integrated approach to tracking all information and communication activities linked to contacts. Simple ones
+			for personal use are included in most smartphones. The main reference standard for contact data and
+			metadata, semantic and interchange, is the vCard.
+			
+			Sophisticated contact managers provide calendar sharing features and allow colleagues to access the same
+			database. The main reference standard is the vCalendar.
+			
+			In management terminology, advanced contact managers can be called individual resource management (IRM) or
+			contact management (CM) tools – systems for managing an individual's interactions with current and future
+			contacts, to organize, collaborate, and synchronize health, lifestyle, and financial needs.
+		</p>
+	</div>
+</section>
 </body>
 </html>

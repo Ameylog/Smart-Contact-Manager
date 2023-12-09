@@ -12,6 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,38 +31,35 @@ import java.util.Optional;
 public class UserController {
 
     private final UserRepository userRepository;
-
     private final ContactRepository contactRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserController(UserRepository userRepository, ContactRepository contactRepository) {
+    public UserController(UserRepository userRepository, ContactRepository contactRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.contactRepository = contactRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     // method for adding common data to response
-    @ModelAttribute         // call automatically when model used
+    @ModelAttribute        // call automatically when model used
     public void addCommonData(Model model, Principal principal) {
         String userName = principal.getName();
-        System.out.println("username :- " + userName);
+//        System.out.println("username :- " + userName);
         User user = userRepository.getUsersByUserName(userName);
-
-        System.out.println("USER " + user);
-
+//        System.out.println("USER " + user);
         model.addAttribute("user", user);
-
     }
 
-    // dashboard home
-    @RequestMapping("/index")           // with help of principal we will get username,other data of user..
+    // Implementing of dashboard [home]
+    @RequestMapping("/index")    // with help of principal we will get username,other data of user..
     public String dashboard(Model model, Principal principal) {
 
         model.addAttribute("title", "User dashboard");
-
         // get the user using username
         return "normal/user_dashboard";
     }
 
-    // open add from handler
+    // Implementing for adding contact [from handler]
     @GetMapping("/add-contact")
     public String openAddContactFrom(Model model) {
 
@@ -79,12 +77,13 @@ public class UserController {
         try {
             String name = principal.getName();
             User user = this.userRepository.getUsersByUserName(name);
-
+            // processing image file
             if (file.isEmpty()) {
                 System.out.println("File not found");
                 contact.setImage("contact.jpg");
 
             } else {
+                // if file has data we add file to folder and name to the database
                 // set image name
                 contact.setImage(file.getOriginalFilename());
 
@@ -96,39 +95,31 @@ public class UserController {
 
                 // copy file and taking path if image is present then replace
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
                 System.out.println("Image is uploaded");
             }
-            user.getContacts().add(contact);
+            //bidirectional
             contact.setUser(user);
-
+            user.getContacts().add(contact);
             this.userRepository.save(user);
-
-            System.out.println("Data " + contact);
-            System.out.println("Added to data base..");
+//            System.out.println("Data " + contact);
+//            System.out.println("Added to data base..");
 
             // message success....
             session.setAttribute("message", new Message("Your Contact is added !! Add More..", "success"));
 
         } catch (Exception e) {
             System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
             // message error
             session.setAttribute("message", new Message("something is wrong !! try again", "danger"));
+            e.printStackTrace();
         }
         return "normal/add_contact_form";
     }
 
-    // show contacts handler
-    //per page =5[n]
-    //current page=0 [page]
+    // show contacts handler  //per page =5[n]    //current page=0 [page]
     @GetMapping("/show-contacts/{page}")
     public String showContact(@PathVariable("page") Integer page, Model model, Principal principal) {
         model.addAttribute("title", "This is Show Contact");
-
-        // send contact list
-//        String userName=principal.getName();
-//        User user=this.userRepository.getUsersByUserName(userName);
 
         //we have to find contact of all contact of login user
         String userName = principal.getName();
@@ -136,6 +127,7 @@ public class UserController {
 
         // page request ->
         Pageable pageable = PageRequest.of(page, 6);
+        //contact find by user Id
         Page<Contact> contacts = this.contactRepository.findContactsByUser(user.getId(), pageable);
 
         model.addAttribute("contacts", contacts);
@@ -149,7 +141,7 @@ public class UserController {
     @RequestMapping("/{cId}/contact")
     public String showContactDetail(@PathVariable("cId") Integer cId, Model
             model, Principal principal) {
-        System.out.println("CID" + cId);
+//        System.out.println("CID" + cId);
 
         Optional<Contact> contactOptional = this.contactRepository.findById(cId);
 
@@ -162,35 +154,33 @@ public class UserController {
 
             if (user.getId() == contact.getUser().getId())
                 model.addAttribute("contact", contact);
-            model.addAttribute("title", contact.getName());
+                 model.addAttribute("title", contact.getName());
         }
-
         return "normal/contact_details";
     }
 
     // delete contact details handler
     @GetMapping("/delete/{cId}")
     public String deleteContact(@PathVariable("cId") Integer cId, Model model
-            , HttpSession session,Principal principal) {
+            , HttpSession session, Principal principal) {
 
-        System.out.println("CID" + cId);
+//        System.out.println("CID" + cId);
         Contact contact = this.contactRepository.findById(cId).get();
 
         //check...Assignment.
         System.out.println("Contact" + contact.getcId());
 
-        //demapping from user so null user
-
-        User user=this.userRepository.getUsersByUserName(principal.getName());
+        //mapping from user so null user
+        User user = this.userRepository.getUsersByUserName(principal.getName());
         user.getContacts().remove(contact);
-
         this.userRepository.save(user);
 
         // remove Image from img folder;
-        File file2 = new File("target/classes/static/img", contact.getImage());
-        boolean deleted = file2.delete();
-        System.out.println(deleted);
-
+        if (!contact.getImage().equals("contact.jpg")) {
+            File file2 = new File("target/classes/static/img", contact.getImage());
+            boolean deleted = file2.delete();
+            System.out.println(deleted);
+        }
 
         this.contactRepository.delete(contact);
         System.out.println("Deleted..");
@@ -203,7 +193,6 @@ public class UserController {
     @PostMapping("/update-contact/{cId}")
     public String updateForm(@PathVariable("cId") Integer cId, Model m) {
         m.addAttribute("title", "Update Contact");
-
         Contact contact = this.contactRepository.findById(cId).get();
         m.addAttribute("contact", contact);
         return "normal/update_form";
@@ -215,18 +204,16 @@ public class UserController {
                                 Model m, HttpSession session, Principal principal) {
         try {
             //old contact details
-
             Contact oldContactDetails = this.contactRepository.findById(contact.getcId()).get();
 
             //image
             if (!file.isEmpty()) {
-
                 //   delete file
-                 File deleteFile=new ClassPathResource("static/img").getFile();
-                 File file1 =new File(deleteFile,oldContactDetails.getImage());
-                 file1.delete();
+                File deleteFile = new ClassPathResource("static/img").getFile();
+                File file1 = new File(deleteFile, oldContactDetails.getImage());
+                file1.delete();
 
-                 // update new Photo
+                // update new Photo
                 // save file at specific folder  // rewrite file[replace]
 
                 File saveFile = new ClassPathResource("static/img").getFile();
@@ -234,11 +221,11 @@ public class UserController {
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
                 contact.setImage(file.getOriginalFilename());
 
+
             } else {
                 //file is empty
                 contact.setImage(oldContactDetails.getImage());
             }
-
             String userName = principal.getName();
             User user1 = this.userRepository.getUsersByUserName(userName);
             contact.setUser(user1);
@@ -250,12 +237,52 @@ public class UserController {
             e.printStackTrace();
 
         }
+//        System.out.println("Contact NAme " + contact.getName());
+//        System.out.println("Contact No" + contact.getPhone());
+//        System.out.println("Contact Id:- " + contact.getcId());
 
-        System.out.println("Contact NAme " + contact.getName());
-        System.out.println("Contact No" + contact.getPhone());
-        System.out.println("Contact Id:- "+contact.getcId());
-
-        return "redirect:/user/"+contact.getcId()+"/contact";
+        return "redirect:/user/" + contact.getcId() + "/contact";
     }
+
+    //your profile handler
+    @GetMapping("/profile")
+    public String yourProfile(Model model) {
+        model.addAttribute("title", "Profile page");
+        return "normal/profile";
+    }
+
+    // setting handler
+    @GetMapping("/settings")
+    public String openSetting() {
+        return "normal/settings";
+    }
+
+    // change password handler
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword,
+                                 Principal principal, HttpSession session) {
+
+        // principal --> Gives current login user
+//        System.out.println("Old Password:- " + oldPassword);
+//        System.out.println("New Password:- " + newPassword);
+
+        User currentUser = this.userRepository.getUsersByUserName(principal.getName());
+//        System.out.println(currentUser.getPassword());   // print in current user password from database
+
+        // match oldpassword[entered password] and currentUser.getPassword()[already stored in database]
+        if (this.bCryptPasswordEncoder.matches(oldPassword, currentUser.getPassword())) {
+            // change the password
+            currentUser.setPassword(this.bCryptPasswordEncoder.encode(newPassword));
+            userRepository.save(currentUser);
+
+            session.setAttribute("message", new Message("Password updated successfully", "success"));
+        } else {
+            // if password is wrong
+            session.setAttribute("message", new Message("Invalid Old password!,enter correct password", "danger"));
+            return "redirect:/user/settings";
+        }
+        return "redirect:/user/index";
+    }
+
 
 }

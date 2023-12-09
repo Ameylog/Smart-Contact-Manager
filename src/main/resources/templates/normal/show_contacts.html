@@ -8,52 +8,61 @@
 <body>
 <section>
 	
-	<div class="card">
-		
-		<div class="card-body mx-3">
-			
+	<div class="card mx-3">
+		<div class="card-body" id="card-body">
 			<h1 class="text-center">Your Contacts</h1>
 			
-			<table class="table">
-				<thead>
-				<tr>
-					<th scope="col">#ID</th>
-					<th scope="col">Name</th>
-					<th scope="col">Email</th>
-					<th scope="col">Phone</th>
-					<th scope="col">Action</th>
-				</tr>
-				</thead>
-				
-				<tbody>
-				
-				<tr th:each="c :${contacts}">
-					<th scope="row" th:text="'SCM2023'+ ${c.cId}">1</th>
-					
-					<td>
-						<img src=" " class="my_profile_picture" th:src="@{'/img/'+${c.image}}" alt="profile photo">
-						<span th:text="${c.name}"></span>
-					</td>
-					
-					<td>
-						<a href="#" th:href="@{'/user/'+${c.cId}+'/contact'}">
-							<span th:text="${c.email}"></span>
-						</a>
-					</td>
-					<td th:text="${c.phone}"></td>
-					
-					<td class="d-flex ">
-						<!-- <a th:href="@{'/user/delete/'+${c.cId}}" class="btn btn-danger btn-sm">Delete</a> -->
-						<a href="#" th:onclick="|deleteContact(${c.cId})|" class="btn btn-danger">Delete</a>
-						
-						<form method="post" th:action="@{'/user/update-contact/'+${c.cId}}" class="mx-2">
-							<button type="submit" class="btn btn-success">Update</button>
-						</form>
-					</td>
-				</tr>
-				</tbody>
+			<!-- Search -->
+			<div class="search-container my-2 w-25">
+				<input onkeyup="search()" id="search-input" type="text" class="form-control"
+				       placeholder="Search your contact">
+				<div class="search-result font-">
+					<!-- result goes here -->
+				</div>
+			</div>
 			
-			</table>
+			<div class="table-responsive ">
+				<table class="table table-hover">
+					<thead>
+					<tr>
+						<th scope="col">#ID</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">Phone</th>
+						<th scope="col">Action</th>
+					</tr>
+					</thead>
+					
+					<tbody>
+					
+					<tr th:each="c :${contacts}">
+						<th scope="row" th:text="'SCM2023'+ ${c.cId}">1</th>
+						
+						<td>
+							<img src=" " class="my_profile_picture" th:src="@{'/img/'+${c.image}}" alt="profile photo">
+							<span th:text="${c.name}"></span>
+						</td>
+						
+						<td>
+							<a href="#" th:href="@{'/user/'+${c.cId}+'/contact'}">
+								<span th:text="${c.email}"></span>
+							</a>
+						</td>
+						<td th:text="${c.phone}"></td>
+						
+						<td class="d-flex ">
+							<!-- <a th:href="@{'/user/delete/'+${c.cId}}" class="btn btn-danger btn-sm">Delete</a> -->
+							<a href="#" th:onclick="|deleteContact(${c.cId})|" class="btn btn-danger">Delete</a>
+							
+							<form method="post" th:action="@{'/user/update-contact/'+${c.cId}}" class="mx-2">
+								<button type="submit" class="btn bg-primary text-white">Update</button>
+							</form>
+						</td>
+					</tr>
+					</tbody>
+				
+				</table>
+			</div>
 			
 			<nav aria-label="Page navigation example">
 				<ul class="pagination">
@@ -75,7 +84,15 @@
 		
 		</div>
 	</div>
-
+	
+	<!-- highlight[active] when  cick on sidebar button -->
+	<script>
+		$(document).ready(() => {
+			$('.item').removeClass('active');
+			$('#show-link').addClass("active");
+		});
+	</script>
+	
 </section>
 </body>
 </html>

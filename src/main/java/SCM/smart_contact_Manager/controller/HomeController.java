@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
 @Controller
 public class HomeController {
 
@@ -30,7 +29,7 @@ public class HomeController {
 
     // Home handler
     @RequestMapping("/")
-    public String home(Model model, HttpSession session) {
+    public String home(Model model) {
         model.addAttribute("title", "Home - Smart Contact Manager");
         return "home";
     }
@@ -50,13 +49,13 @@ public class HomeController {
         return "signup";
     }
 
-    // handle for do_register registring data
+    // handle for do_register registering data
     @PostMapping("/do_register")
     public String registerUser(@Valid @ModelAttribute("user") User user, BindingResult result1, @RequestParam(value = "agreement",
             defaultValue = "false") boolean agreement, Model model, HttpSession session, Message message) {
         try {
             if (!agreement) {
-                System.out.println("You have not agreed the terms and conditions");
+//                System.out.println("You have not agreed the terms and conditions");
                 throw new Exception("You have not agreed the terms and conditions");
             }
 
@@ -68,17 +67,13 @@ public class HomeController {
             }
             user.setRole("ROLE_USER");
             user.setEnabled(true);
-            user.setImageUrl("default.png");
+            user.setImageUrl("contact.jpg");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-            System.out.println("Agreement" + agreement);
-            System.out.println("USER" + user);
+//            System.out.println("Agreement" + agreement);
+//            System.out.println("USER" + user);
             User result = this.userRepository.save(user);
-
             model.addAttribute("user", new User());
-
-
-//            model.addAttribute("message", new Message("Successfully Registered!! ", "alert-success"));
             session.setAttribute("message", new Message("Successfully Registered !!", "alert-success"));
             return "signup";
 
@@ -95,6 +90,11 @@ public class HomeController {
     public String customeLogin(Model model) {
         model.addAttribute("title", "Login Page");
         return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logoutUser(){
+        return "redirect:/";
     }
 
 }

@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.List;
 
-
 public class CustomeUserDetails implements UserDetails {
-
 
     // Contributor based dependency injection
     private User user;

@@ -7,9 +7,9 @@
 </head>
 <body>
 <section>
-    <div class="card mx-3" >
+    <div class="card mx-3">
 
-        <div class="card-body ">
+        <div class="card-body">
             <h1 class="text-center">Add Contact</h1>
 
             <div class="container-fluid mt-1">
@@ -116,7 +116,13 @@
 			selector:'#mytextarea'
 		});
 	</script>
+	<script>
+		$(document).ready(() => {
+			$('.item').removeClass('active');
+			$('#add-link').addClass("active");
+		});
 	
+	</script>
 </section>
 </body>
 </html>

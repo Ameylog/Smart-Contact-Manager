@@ -11,10 +11,10 @@
 	<!-- if condition if show only users contact and access it -->
 	<div class="card mx-2" th:if="${contact}">
 		<div class="card-body">
-		
+			
 			<div class="container text-center">
 				
-				<img src=" " style="height: 200px; width: 200px" class="my_profile_picture"
+				<img src=" " style="height: 150px; width: 150px" class="my_profile_picture"
 				     th:src="@{'/img/'+${contact.image}}" alt="profile photo">
 				
 				<h1><span th:text="${contact.name}"></span> (<span th:text="${contact.secondName}"></span>) </h1>
@@ -23,7 +23,7 @@
 					<thead>
 					<tr>
 						<th scope="col">#ID</th>
-						<th scope="col">SCRMUSER<span th:text="${contact.cId}"></span> </th>
+						<th scope="col">SCRMUSER<span th:text="${contact.cId}"></span></th>
 					
 					</tr>
 					</thead>
@@ -43,28 +43,29 @@
 						<td><span th:text="${contact.work}"></span></td>
 					</tr>
 					
-					</tbody>
+					<tr>
+						<th scope="row">Description</th>
+						<td><span th:text="${contact.description}"></span></td>
+					</tr>
 					
+					</tbody>
+				
 				</table>
 				
-				<div class="description">
-					<th:block th:text="${contact.description}"></th:block>
-				</div>
+				<!-- <div class="description"> -->
+				<!-- 	 -->
+				<!-- 	<th:block th:text="${contact.description}"></th:block> -->
+				<!-- </div> -->
 			</div>
 			
 			<div class="d-flex justify-content-center mt-4">
 				<button th:onclick="|deleteContact(${contact.cId})|" class="btn btn-danger px-4 mx-3">Delete</button>
 				
-				<form method="post" th:action="@{'/user/update-contact/'+${contact.cId}}"  >
+				<form method="post" th:action="@{'/user/update-contact/'+${contact.cId}}">
 					<button type="submit" class="btn btn-success px-4 mx-3">Update</button>
 				</form>
-			
 			</div>
-			
-			
-			
 		</div>
-	
 	</div>
 	
 	<!-- else condition of if contact of other user -->

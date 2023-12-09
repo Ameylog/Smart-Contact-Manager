@@ -22,3 +22,7 @@ normal/base :- it is customize for user all form inheritance from this form
 login :- for Login
 singup :- For singup
 home :- home for public user
+
+# Input text field
+when take input type="number" then arrow show in right corner
+we can avoid take type="text" inputmode="numeric"
