@@ -16,7 +16,6 @@ import java.util.Random;
 
 @Controller
 public class ForgotController {
-    Random random = new Random(100000);
 
     @Autowired
     private EmailService emailService;
@@ -34,27 +33,26 @@ public class ForgotController {
     //send otp handler
     @PostMapping("/send-otp")
     public String sendOTP(@RequestParam("email") String email, HttpSession session) {
+
         System.out.println("EMAIL " + email);
+        User name= userRepository.getUsersByUserName(email);
 
-        //generating otp of f4 digit
-
-        int otp = random.nextInt(999999);
+        //generating otp of 6 digit
+        long otp = 100000 + new Random().nextInt(900000);
         System.out.println("OTP:- " + otp);
 
         String subject = "OTP from SCM";
-        String message = ""
-                + "<div style='border:1px solid #e2e2e2; padding:20px'>"
-                + "<h1>"
-                + "OTP is : "
-                + "<b>" + otp
-                + "</b>"
-                + "</h1>"
-                + "</div>";
+        String message = "<p>Hello " + name.getName() + ",</p>\n\n"+
+                "<p>We received a request to reset the password for your account. " +
+                "If you did not make this request, please ignore this email. " +
+                "This is your OTP:</p>\n\n" + ""+otp+
+                "<p>Thank you,</p>\n" +
+                "<p>Smart Contact Manager Team</p>";
         String to = email;
 
-        boolean flag = this.emailService.sendEmail(subject, message, to);
+        boolean flag = emailService.sendEmail(subject, message, to);
         if (flag) {
-            session.setAttribute("otp", otp);
+            session.setAttribute("myotp", otp);
             session.setAttribute("email", email);
             return "varify_otp";
         } else {
@@ -65,9 +63,9 @@ public class ForgotController {
 
     //verify otp handler
     @PostMapping("/varify-otp")
-    public String varifyOTP(@RequestParam("otp") int otp, HttpSession session) {
-        int myotp = (int) session.getAttribute("myotp");
-        String email = (String) session.getAttribute("email");
+    public String varifyOTP(@RequestParam("otp") long otp, HttpSession session) {
+        long myotp = (long) session.getAttribute("myotp");
+        String email =(String) session.getAttribute("email");
 
         if (myotp == otp) {
             //change password form
@@ -89,11 +87,10 @@ public class ForgotController {
         }
     }
 
-    @PostMapping("/change-password")
+    @PostMapping("/user-change-password")
     public String changePassword(@RequestParam("newpassword") String newpassword, HttpSession session) {
         String email = (String) session.getAttribute("email");
         User user = userRepository.getUsersByUserName(email);
-        user.setPassword(bcryptEncoder.encode(newpassword));
 
         //changing whether old password is same as new password
         if (bcryptEncoder.matches(newpassword, user.getPassword())) {
@@ -101,7 +98,8 @@ public class ForgotController {
             System.out.println("error...");
             return "change_password";
         }
+        user.setPassword(bcryptEncoder.encode(newpassword));
         userRepository.save(user);
-        return "redirect:/login?chnage=password chnage sucessfully";
+        return "redirect:/signin?change=password change successfully";
     }
 }

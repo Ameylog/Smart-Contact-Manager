@@ -14,7 +14,7 @@
 				<div class="container text-center">
 					<img src="" style="height: 120px;width: 120px;border-radius: 50%;border:1px solid gray"
 					     class="my_profile_picture"
-					     th:src="@{'/img/contact.jpg'}" alt="">
+					     th:src="@{'/img/'+${user.imageUrl}}" alt="">
 					<h2 class="text-center" th:text="${user.name}">
 					</h2>
 				</div>
@@ -33,12 +33,13 @@
 					smartphones.
 				</p>
 				
-				<h2 class="my-2 text-center">Feel free to Donate us</h2>
-				<input id="payment_field" type="text" class="form-control my-2" placeholder="Enter amount here"/>
+				<!-- payment integration -->
+				<!-- <h2 class="my-2 text-center">Feel free to Donate us</h2> -->
+				<!-- <input id="payment_field" type="text" class="form-control my-2" placeholder="Enter amount here"/> -->
 				
-				<div class="container text-center">
-					<button onclick="paymentStart()" class="btn btn-success">Pay</button>
-				</div>
+				<!-- <div class="container text-center"> -->
+				<!-- 	<button onclick="paymentStart()" class="btn btn-success">Pay</button> -->
+				<!-- </div> -->
 			</div>
 		</div>
 	</div>

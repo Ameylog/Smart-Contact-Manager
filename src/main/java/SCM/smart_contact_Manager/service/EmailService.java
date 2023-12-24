@@ -36,10 +36,11 @@ public class EmailService {
         Session session=Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("ameynandkisghorshende@gmail.com", "");
+                return new PasswordAuthentication("ameynandkishorshende@gmail.com", "zjqlbnmvmajyjxpi");
             }
         });
         session.setDebug(true);
+
 
         //step 2:compose the message [text,multimedia]
         MimeMessage m=new MimeMessage(session);
@@ -54,11 +55,11 @@ public class EmailService {
             m.setSubject(subject);
 
             //adding text to message
-            m.setText(message);
+            m.setContent(message,"text/html; charset=utf-8");
 
             //send
 
-            //step 3: send the message using transport clss
+            //step 3: send the message using transport class
             Transport.send(m);
 
             System.out.println("Sent success.......");
@@ -71,3 +72,4 @@ public class EmailService {
     }
 
 }
+//    zjql bnmv majy jxpi

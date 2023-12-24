@@ -46,28 +46,22 @@
 				
 				<!-- Home -->
 				<li class="nav-item">
-					<a class="nav-link active" aria-current="page" href="#">Home</a>
+					<a class="nav-link active" aria-current="page" th:href="@{/user/index}" href="#">Home</a>
 				
 				</li>
 				
 				<!-- User name -->
 				<li class="nav-item">
-					<a class="nav-link" href="#" tabindex="-1" aria-disabled="true">
+					<a class="nav-link active" th:href="@{/user/profile}" href="#" tabindex="-1" aria-disabled="true">
 						<span th:text="${user.name}"></span></a>
 				</li>
 				
 				<!-- logout -->
 				<li class="nav-item">
 					<a href="#" th:href="@{/logout}" tabindex="-1"
-					   class="nav-link" aria-disabled="true">Logout</a>
+					   class="nav-link active" aria-disabled="true">Logout</a>
 				</li>
 			</ul>
-			
-			<!-- search box -->
-			<!-- <form class="d-flex"> -->
-			<!-- 	<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"> -->
-			<!-- 	<button class="btn btn-outline-success bg-warning text-white" type="submit">Search</button> -->
-			<!-- </form> -->
 		</div>
 	</div>
 </nav>
@@ -75,6 +69,8 @@
 
 
 <!-- <div th:replace="${content}"></div> -->
+
+
 
 <!-- sidebar -->
 
@@ -152,8 +148,6 @@
 			}
 		})
 	}
-
 </script>
-
 </body>
 </html>

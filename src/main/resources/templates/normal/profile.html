@@ -12,7 +12,7 @@
 		<div class="card mx-3">
 			<div class="card-body text-center">
 				<div class="container text-center">
-					<img src=" " style="height: 200px; width: 200px" class="my_profile_picture"
+					<img src=" " style="height: 150px; width: 150px" class="my_profile_picture"
 					     th:src="@{'/img/'+${user.imageUrl}}" alt="profile photo">
 					
 					<h1 class="text-center" th:text="${user.name}"> </h1>
@@ -52,7 +52,7 @@
 					<button th:onclick="|deleteContact(${user.id})|" class="btn btn-danger px-4 mx-3">Delete</button>
 					
 					<form th:action="@{/user/update-user}" method="post">
-						<button class="btn-block btn btn-info">EDIT USER</button>
+						<button class="btn-block btn btn-info bg-primary text-white">Edit User</button>
 					</form>
 				</div>
 				

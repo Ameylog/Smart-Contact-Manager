@@ -12,15 +12,24 @@
 			<div id="login-row" class="row text-center align-items-center d-flex justify-content-center">
 				<div id="login-column" class="col-md-6">
 					
-					<div id="login-box" style="height:220px;" class="col-sm-12 ">
+					<div id="login-box" style="height:220px;border-radius:2%;" class="col-sm-12 pt-1 shadow-sm">
 						
 						<!--  Email OTP verify form-->
-						<div class="alert alert-success mt-2 mx-2" role="alert">We have send OTP to your email...</div>
+						<div class="alert alert-success mx-2" role="alert">We have send OTP to your email...</div>
+						
+						
+						<!-- message  box-->
+						<div th:if="${session.message}" class="container">
+							
+							<div class="alert alert-danger my-2  text-center" role="alert">
+								<span th:text="${session.message}"></span>
+							</div>
+							<th:block th:text="${@sessionHelper.removeMessageFromSession()}"></th:block>
+						</div>
 						
 						<form action="" th:action="@{/varify-otp}" method="post">
 							
 							<div class="form-group text-center w-50% mx-5 mt-4">
-								
 								<input type="text" inputmode="numeric" name="otp" class="form-control"
 								       required="required" placeholder="Enter OTP here">
 							</div>

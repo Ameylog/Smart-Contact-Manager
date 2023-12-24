@@ -76,7 +76,7 @@ public class MyConfig  {
                                      .defaultSuccessUrl("/user/index"))
 
                 .logout(logout->logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/").invalidateHttpSession(true)
+                        .logoutSuccessUrl("/signin").invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"));
 
         http.authenticationProvider(daoAuthenticationProvider());

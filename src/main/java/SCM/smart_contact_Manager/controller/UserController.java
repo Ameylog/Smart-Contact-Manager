@@ -8,6 +8,7 @@ import SCM.smart_contact_Manager.entities.User;
 import SCM.smart_contact_Manager.helper.Message;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.cglib.SpringCglibInfo;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -189,7 +191,7 @@ public class UserController {
         return "redirect:/user/show-contacts/0";
     }
 
-    // open  update contact details [open Update Detail form]
+    // update contact details [open Update Detail form]
     @PostMapping("/update-contact/{cId}")
     public String updateForm(@PathVariable("cId") Integer cId, Model m) {
         m.addAttribute("title", "Update Contact");
@@ -200,7 +202,7 @@ public class UserController {
 
     // update contact Handle for saving data in database
     @PostMapping("/process-update")
-    public String updateHandler(@ModelAttribute Contact contact, @RequestParam("profileImage") MultipartFile file,
+    public String updateHandler(@ModelAttribute Contact contact, @RequestParam("customImage") MultipartFile file,
                                 Model m, HttpSession session, Principal principal) {
         try {
             //old contact details
@@ -211,7 +213,10 @@ public class UserController {
                 //   delete file
                 File deleteFile = new ClassPathResource("static/img").getFile();
                 File file1 = new File(deleteFile, oldContactDetails.getImage());
-                file1.delete();
+
+                if(!oldContactDetails.getImage().equals("contact.jpg")) {
+                    file1.delete();
+                }
 
                 // update new Photo
                 // save file at specific folder  // rewrite file[replace]
@@ -228,8 +233,8 @@ public class UserController {
             }
             String userName = principal.getName();
             User user1 = this.userRepository.getUsersByUserName(userName);
-            contact.setUser(user1);
 
+            contact.setUser(user1);
             this.contactRepository.save(contact);
             session.setAttribute("message", new Message("Your contact s updated...", "success"));
 
@@ -241,8 +246,47 @@ public class UserController {
 //        System.out.println("Contact No" + contact.getPhone());
 //        System.out.println("Contact Id:- " + contact.getcId());
 
-        return "redirect:/user/" + contact.getcId() + "/contact";
+        return "redirect:/user/"+contact.getcId()+"/contact";
     }
+
+    //update user profile handler
+    @PostMapping("/update-user")
+    public String updateUser(Model model ,Principal principal){
+        User user=userRepository.getUsersByUserName(principal.getName());
+        model.addAttribute("user",user);
+        return "normal/update_user";
+    }
+
+    // user-update process
+    @PostMapping("/user-update-process")
+    public String updatedUserProcess(@ModelAttribute User user,@RequestParam("customImage") MultipartFile file,
+            Model model,Principal principal,HttpSession session) throws IOException {
+
+        User old_user=userRepository.getUsersByUserName(principal.getName());
+        if(!file.isEmpty()){
+            //deleting old user image
+
+            File deleteFile = new ClassPathResource("/static/img").getFile();
+            File deletFilenow = new File(deleteFile, old_user.getImageUrl());
+
+            //default image not be deleted
+            if(!old_user.getImageUrl().equals("contact.jpg")) {
+                deletFilenow.delete();
+            }
+
+            //save user image
+            File saveFile=new ClassPathResource("static/img").getFile();
+            Path path=Paths.get(saveFile.getAbsolutePath()+File.separator+file.getOriginalFilename());
+            Files.copy(file.getInputStream(),path,StandardCopyOption.REPLACE_EXISTING);
+            user.setImageUrl(file.getOriginalFilename());
+        }else{
+            user.setImageUrl(old_user.getImageUrl());
+        }
+        userRepository.save(user);
+        session.setAttribute("message",new Message("Profile updated successfully login again!","success"));
+        return "redirect:/user/index";
+    }
+
 
     //your profile handler
     @GetMapping("/profile")
